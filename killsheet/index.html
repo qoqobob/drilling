@@ -234,25 +234,22 @@
                 <div class="bg-color-white p-1 mb-2 h-100 w-100 position-absolute top-0 start-0" id="drillstringDiv" hidden>
                     <div class="h-50 overflow-scroll border border-secondary">
                         <small>
-                            <span><strong>Add volumetric data of the drillstring:<br>0.24; 0.7917<br>1256.78;
-                                    1003.45 <br>...</strong>
+                            <span><strong>Add volumetric data of the drillstring:<br>8 1/2" PDC bit; 0.32; 2.5652<br>PD 675 X5 AB 8 1/2"; 4.11;
+                                    8.9383 <br>...</strong>
                                 <br>
-                                <i>Note: <br>MD; TVD <br>The 1st number is a measured depth (MD) and
-                                    the 2nd number is a vertical depth (TVD) of a survey point of the deviated (or
-                                    vertical) well. MD and TVD can be tab-delimited (by default for MS Excel) or
-                                    semicolon-delimited (;). Each survey point (MD;
-                                    TVD) takes a new row. See the expample above for 2 survey points: MD=1234.56,
-                                    TVD=987.65
-                                    and MD=1256.78, TVD=1003.45.
+                                <i>Note: <br>Description; Length; Capacity <br>
+                                    After a drillstring component description, the 1st number is a length and
+                                    the 2nd number is a inner volumetric capacity of this component. Description, Length, Capacity can be tab-delimited (by default for MS Excel) or
+                                    semicolon-delimited (;). Each component datum takes a new row. See the expample above for 2 drillstring components. <strong>The sequence of components must be from bottom to surface (A bit is first and DP is last).</strong> 
                                 </i>
                                 <br>
                                 <br>
-                                <i>Tip: if there is directional survey file, then use copy CTRL+C, paste CTRL+V</i>
+                                <i>Tip: if there is a bottom hole assembly file, then use copy CTRL+C, paste CTRL+V</i>
                             </span>
                         </small>
                     </div>
                     <div class="d-flex flex-row mt-2 w-100">
-                        <textarea class="me-2" id="textareaDrillstring" cols="30" rows="10"></textarea>
+                        <textarea class="me-2 w-75" id="textareaDrillstring" cols="30" rows="10"></textarea>
                         <div>
                             <button class="btn btn-sm btn-outline-success m-2" id="saveDrillstringBtn">Save volume data</button>
                             <button class="btn btn-sm btn-outline-secondary m-2" id="cancelDrillstringBtn">Cancel</button>
@@ -274,14 +271,14 @@
                                 <td>PUMP STROKES, strokes</td>
                                 <td>TIME, minutes</td>
                             </tr>
-                            <tr class="bg-color-gray">
+                            <!-- <tr class="bg-color-gray">
                                 <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                            </tr>
+                            </tr> -->
                             <tbody id="drillstring">
                                 <tr>
                                     <td>DRILLSTRING COMPONENT 1 <i>(e.g. Bit)</i></td>
@@ -321,7 +318,7 @@
                                     <td><input class="w-100" type="text" id="dsStrokes" disabled></td>
                                     <td><input class="w-100" type="text" id="dsPumpTime" disabled></td>
                                 </tr>
-                                <tr class="bg-color-gray">
+                                <!-- <tr class="bg-color-gray">
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -380,7 +377,7 @@
                                     <td><input class="w-100" type="text" id="ohTotalVolume" disabled></td>
                                     <td><input class="w-100" type="text" id="ohTotalStrokes" disabled></td>
                                     <td><input class="w-100" type="text" id="ohTotalPumpTime" disabled></td>
-                                </tr>
+                                </tr> -->
                             </tbody>
                         </table>
                     </div>

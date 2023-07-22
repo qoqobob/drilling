@@ -136,12 +136,123 @@ byId("saveSurveyBtn").onclick = () => {
 }
 
 //-------------drilstring
+function displayDefaultDrillstring() {
+    const tBody = byId("drillstring");
+    tBody.innerHTML = `
+    <tr>
+    <td>DRILLSTRING COMPONENT 1 <i>(e.g. Bit)</i></td>
+    <td><input class="w-100" type="text" id="dsCompLength1" disabled></td>
+    <td><input class="w-100" type="text" id="dsCompCapacity1" disabled></td>
+    <td><input class="w-100" type="text" id="dsCompVolume1" disabled></td>
+    <td><input class="w-100" type="text" id="dsCompStrokes1" disabled></td>
+    <td><input class="w-100" type="text" id="dsCompPumpTime1" disabled></td>
+    </tr>
+    <tr>
+    <td>DRILLSTRING COMPONENT 2</td>
+    <td><input class="w-100" type="text" id="dsCompLength2" disabled></td>
+    <td><input class="w-100" type="text" id="dsCompCapacity2" disabled></td>
+    <td><input class="w-100" type="text" id="dsCompVolume2" disabled></td>
+    <td><input class="w-100" type="text" id="dsCompStrokes2" disabled></td>
+    <td><input class="w-100" type="text" id="dsCompPumpTime2" disabled></td>
+    </tr>
+    <tr>
+    <td>...</td>
+    <td><input class="w-100" type="text" id="dsCompLength3" disabled></td>
+    <td><input class="w-100" type="text" id="dsCompCapacity3" disabled></td>
+    <td><input class="w-100" type="text" id="dsCompVolume3" disabled></td>
+    <td><input class="w-100" type="text" id="dsCompStrokes3" disabled></td>
+    <td><input class="w-100" type="text" id="dsCompPumpTime3" disabled></td>
+    </tr>
+    <tr>
+    <td>DRILLSTRING COMPONENT N <i>(e.g. DP)</i></td>
+    <td><input class="w-100" type="text" id="dsCompLengthN" disabled></td>
+    <td><input class="w-100" type="text" id="dsCompCapacityN" disabled></td>
+    <td><input class="w-100" type="text" id="dsCompVolumeN" disabled></td>
+    <td><input class="w-100" type="text" id="dsCompStrokesN" disabled></td>
+    <td><input class="w-100" type="text" id="dsCompPumpTimeN" disabled></td>
+    </tr>
+    <tr>
+    <td colspan="3">DRILLSTRING VOLUME</td>
+    <td><input class="w-100" type="text" id="dsVolume" disabled></td>
+    <td><input class="w-100" type="text" id="dsStrokes" disabled></td>
+    <td><input class="w-100" type="text" id="dsPumpTime" disabled></td>
+    </tr>`;
+}
+function displayDrillstringInTextarea() {
+    const drillstring = sessionStorage.getItem("drillstring");
+    if (drillstring == null) return;
+    if (JSON.parse(drillstring).length > 0) {
+        byId("textareaDrillstring").value = "";
+        const arrDrillstring = JSON.parse(drillstring);
+        let str = "";
+        arrDrillstring.forEach(element => {
+            str += element.description + "; " + element.length + "; " + element.capacity +"\n";
+        });
+        byId("textareaDrillstring").value = str;
+    } else {
+        byId("textareaDrillstring").value = "";
+    }
+}
+function displayDrillstring() {
+    const drillstring = sessionStorage.getItem("drillstring");
+    if (drillstring == null) return;
+    if (JSON.parse(drillstring).length > 0) {
+        const tBody = byId("drillstring");
+        deleteChildElementsOf(tBody);
+        let i = 0;
+        const arrDrillstring = JSON.parse(drillstring);
+        arrDrillstring.forEach(element => {
+            i++;
+            const tr = tBody.insertRow();
+            tr.insertCell().innerText = element.description;
+            tr.insertCell().innerHTML = `<input class="w-100" type="text" id="dsCompLength${i}" disabled>`;
+            byId(`dsCompLength${i}`).value = Number(element.length).toFixed(2);
+            tr.insertCell().innerHTML = `<input class="w-100" type="text" id="dsCompCapacity${i}" disabled>`;
+            byId(`dsCompCapacity${i}`).value = Number(element.capacity).toFixed(2);
+            tr.insertCell().innerHTML = `<input class="w-100" type="text" id="dsCompVolume${i}" disabled>`;
+            byId(`dsCompVolume${i}`).value = Number(element.capacity*element.length).toFixed(2);
+            tr.insertCell().innerHTML = `<input class="w-100" type="text" id="dsCompStrokes${i}" disabled>`;
+            // byId(`dsCompStrokes${i}`).value = element.capacity*element.length/strokeVolume;
+            tr.insertCell().innerHTML = `<input class="w-100" type="text" id="dsCompPumpTime${i}" disabled>`;
+            // byId(`dsCompPumpTime${i}`).value = element.capacity*element.length/strokeVolume/spm;
+        });
+    } else {
+        displayDefaultDrillstring();
+    }
+}
+displayDrillstring();
+
+
 byId("addDrillstringBtn").onclick = () => {
     display("drillstringDiv");
     byId("textareaDrillstring").focus();
-    // displaySurveyInTextarea();
+    displayDrillstringInTextarea();
 }
 byId("cancelDrillstringBtn").onclick = () => {
+    hide("drillstringDiv");
+    byId("textareaDrillstring").value = "";
+}
+byId("saveDrillstringBtn").onclick = () => {
+    let drillstring = [];
+    const rawDrillstring = byId("textareaDrillstring").value;
+    const rows = rawDrillstring.split(/\r?\n/);
+    let isNullValue = false;
+    rows.forEach(element => {
+        if (element.trim() != "") {
+            const row = element.split(/\t|;/)
+            const descriptionValue = row[0].trim();
+            const lengthValue = parseFloat(preformatFloat(row[1]));
+            const capacityValue = parseFloat(preformatFloat(row[2]));
+            drillstring.push({
+                description: descriptionValue,
+                length: lengthValue,
+                capacity: capacityValue
+            });
+            if (isNaN(lengthValue) || isNaN(capacityValue)) {isNullValue = true;}
+        }
+    });
+    if (!isNullValue) {sessionStorage.setItem("drillstring", JSON.stringify(drillstring));}
+    displayDrillstring();
     hide("drillstringDiv");
     byId("textareaDrillstring").value = "";
 }
