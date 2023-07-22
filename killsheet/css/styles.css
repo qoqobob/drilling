@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Oxygen:wght@300;400;700&display=swap');
+*{
+    font-family: 'Oxygen', sans-serif;
+    box-sizing: border-box;
+}
+body{
+    max-width: 1240px;
+    margin: auto;
+}
+#deviationData{
+    border: 0.5px solid gray;
+    height: 7em;
+}
+#volumeData{
+    border: 0.5px solid gray;
+    height: 30em;
+}
+.bg-color-dark{
+    background-color: #585FC7;
+}
+.bg-color-middle{
+    background-color: #717AFF;
+}
+.bg-color-light{
+    background-color: #eff1ff;
+}
+.bg-color-white{
+    background-color: whitesmoke;
+}
+.bg-color-gray{
+    background-color: rgb(166, 166, 166);
+}
+.text-color-dark{
+    color: #585FC7;
+}
+.text-color-white{
+    color: whitesmoke;
+}
+.bg-img{
+    border: 0.5px solid gray;
+    width:100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url(../img/deviatedWell.png);
+    background-position: center;
+    background-size: 100% 100%;
+}
+
