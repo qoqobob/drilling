@@ -147,6 +147,8 @@ byId("saveSurveyBtn").onclick = () => {
         byId("measureDepthHole").value = surveyLastMd().toFixed(2);
         byId("tvDepthHole").value = getTvdByMd(surveyLastMd()).toFixed(2);
     }
+    setDpLengthToSurface(parseFloat(byId("measureDepthHole").value)-cumLengthWithoutDp());
+    displayDrillstring();
     hide("surveyDiv");
     byId("textareaSurvey").value = "";
 }
@@ -334,6 +336,13 @@ function surveyLastMd() {
     const arrSurvey = JSON.parse(survey);
     return arrSurvey[arrSurvey.length - 1].md;
 }
+function setDpLengthToSurface(value) {
+    const drillstring = sessionStorage.getItem("drillstring");
+    if (drillstring == null) return;
+    const arrDrillstring = JSON.parse(drillstring);
+    arrDrillstring[arrDrillstring.length - 1].length=value;
+    sessionStorage.setItem("drillstring", JSON.stringify(arrDrillstring)); 
+}
 byId("measureDepthHole").oninput = () => {
     const mdValue = parseFloat(byId("measureDepthHole").value);
     if (!isNaN(mdValue)) {
@@ -352,6 +361,8 @@ byId("measureDepthHole").onchange = () => {
         byId("measureDepthHole").value = surveyLastMd().toFixed(2);
         byId("tvDepthHole").value = getTvdByMd(surveyLastMd()).toFixed(2);
     }
+    setDpLengthToSurface(parseFloat(byId("measureDepthHole").value)-cumLengthWithoutDp());
+    displayDrillstring();
 }
 
 //auto-fill casing shoe tvd
