@@ -123,7 +123,7 @@ function calcKillDensity() {
     const sidpp = sessionStorage.getItem("sidpp");
     if (sidpp == null) { byId("killMudDensity").value = ""; return; }
     let killMudDensity = parseFloat(currentDensity) + parseFloat(sidpp) / (parseFloat(tvDepthHole) * 0.0981);
-    killMudDensity = (Math.ceil(killMudDensity * 100) / 100); // kill mud density rounded by ceil to 2 decimals
+    killMudDensity = (Math.ceil(killMudDensity * 10000) / 10000); // kill mud density rounded by ceil to 4 decimals
     sessionStorage.setItem("killMudDensity", killMudDensity);
     byId("killMudDensity").value = killMudDensity;
 
@@ -146,7 +146,7 @@ function calcFinalCircPressure() {
     if (currentDensity == null) { byId("fcp").value = ""; return; }
     const fcp = parseFloat(pump1Srp1) * parseFloat(killMudDensity) / parseFloat(currentDensity);
     sessionStorage.setItem("fcp", fcp);
-    byId("fcp").value = fcp.toFixed(1);
+    byId("fcp").value = fcp.toFixed(2);
 }
 
 byId("lotPressure").onchange = () => {

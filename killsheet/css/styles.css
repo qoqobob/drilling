@@ -13,13 +13,24 @@ body{
 }
 #volumeData{
     border: 0.5px solid gray;
-    height: 30em;
+    height: 20em;
 }
+.chartData{
+    border: 0.5px solid gray;
+    max-height: 40em;
+    min-height: 10em;
+}
+@media only screen and (max-width: 767px) {
+    .chartData{
+        max-height: 14em;
+    }
+  }
 .chart{
     border: 0.5px solid gray;
     max-height: 40em;
     min-height: 10em;
 }
+
 #chart_div{
     width: 100%;
     height: 50em;
