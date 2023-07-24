@@ -180,6 +180,11 @@ byId("currentDensity").onchange = () => {
 
     // calculate fcp
     calcFinalCircPressure();
+
+    //redraw chart
+    dataXY = calcKillChartData();
+    google.charts.setOnLoadCallback(drawBackgroundColor);
+    displayChartTable();
 }
 
 byId("sidpp").onchange = () => {
@@ -191,6 +196,11 @@ byId("sidpp").onchange = () => {
 
     // calculate fcp
     calcFinalCircPressure();
+
+    //redraw chart
+    dataXY = calcKillChartData();
+    google.charts.setOnLoadCallback(drawBackgroundColor);
+    displayChartTable();
 }
 byId("pump1Srp1").onchange = () => {
     //calculate icp
@@ -198,6 +208,11 @@ byId("pump1Srp1").onchange = () => {
 
     // calculate fcp
     calcFinalCircPressure();
+
+    //redraw chart
+    dataXY = calcKillChartData();
+    google.charts.setOnLoadCallback(drawBackgroundColor);
+    displayChartTable();
 }
 
 // byId("measureDepthHole").onchange = () => { see below this event handler
@@ -344,6 +359,11 @@ byId("saveSurveyBtn").onclick = () => {
     setVolumeDepthArray();
     hide("surveyDiv");
     byId("textareaSurvey").value = "";
+
+    //redraw chart
+    dataXY = calcKillChartData();
+    google.charts.setOnLoadCallback(drawBackgroundColor);
+    displayChartTable();
 }
 
 //-------------drilstring
@@ -472,7 +492,88 @@ byId("saveDrillstringBtn").onclick = () => {
     setVolumeDepthArray();
     hide("drillstringDiv");
     byId("textareaDrillstring").value = "";
+
+    //redraw chart
+    dataXY = calcKillChartData();
+    google.charts.setOnLoadCallback(drawBackgroundColor);
+    displayChartTable();
 }
+
+//auto-fill hole TVD; auto-update drillstring DP length to surface
+function cumLengthWithoutDp() {
+    const drillstring = sessionStorage.getItem("drillstring");
+    if (drillstring == null) return;
+    const arrDrillstring = JSON.parse(drillstring);
+    let cumLengthWithoutDp = 0;
+    for (let i = 0; i < arrDrillstring.length - 1; i++) {
+        cumLengthWithoutDp += arrDrillstring[i].length;
+    }
+    return cumLengthWithoutDp;
+}
+
+function surveyLastMd() {
+    const survey = sessionStorage.getItem("survey");
+    if (survey == null) return;
+    const arrSurvey = JSON.parse(survey);
+    return arrSurvey[arrSurvey.length - 1].md;
+}
+function setDpLengthToSurface(value) {
+    const drillstring = sessionStorage.getItem("drillstring");
+    if (drillstring == null) return;
+    const arrDrillstring = JSON.parse(drillstring);
+    arrDrillstring[arrDrillstring.length - 1].length = value;
+    sessionStorage.setItem("drillstring", JSON.stringify(arrDrillstring));
+}
+
+byId("measureDepthHole").oninput = () => {
+    const mdValue = parseFloat(byId("measureDepthHole").value);
+    if (!isNaN(mdValue)) {
+        byId("tvDepthHole").value = getTvdByMd(mdValue).toFixed(2);
+        byId("measureDepthHole").min = cumLengthWithoutDp();//min depth is cumulative length of the drillstring excluding the length of DP to surface
+        // byId("measureDepthHole").max = surveyLastMd();//max depth is dir survey total depth
+        sessionStorage.setItem("measureDepthHole", JSON.stringify(parseFloat(byId("measureDepthHole").value)));
+        sessionStorage.setItem("tvDepthHole", JSON.stringify(parseFloat(byId("tvDepthHole").value)));
+
+    }
+}
+byId("measureDepthHole").onchange = () => {
+    if (parseFloat(byId("measureDepthHole").value) < cumLengthWithoutDp()) {
+        byId("measureDepthHole").value = cumLengthWithoutDp().toFixed(2);
+        byId("tvDepthHole").value = getTvdByMd(cumLengthWithoutDp()).toFixed(2);
+    }
+    // if (parseFloat(byId("measureDepthHole").value) > surveyLastMd()) {
+    //     byId("measureDepthHole").value = surveyLastMd().toFixed(2);
+    //     byId("tvDepthHole").value = getTvdByMd(surveyLastMd()).toFixed(2);
+    // }
+    sessionStorage.setItem("measureDepthHole", JSON.stringify(parseFloat(byId("measureDepthHole").value)));
+    sessionStorage.setItem("tvDepthHole", JSON.stringify(parseFloat(byId("tvDepthHole").value)));
+    setDpLengthToSurface(parseFloat(byId("measureDepthHole").value) - cumLengthWithoutDp());
+    displayDrillstring();
+    setVolumeDepthArray();
+
+    //calculate kill mud density
+    calcKillDensity();
+
+    // calculate fcp
+    calcFinalCircPressure();
+
+    //redraw chart
+    dataXY = calcKillChartData();
+    google.charts.setOnLoadCallback(drawBackgroundColor);
+    displayChartTable();
+}
+
+//auto-fill casing shoe tvd
+byId("measureDepthShoe").oninput = () => {
+    const mdValue = parseFloat(byId("measureDepthShoe").value);
+
+    if (!isNaN(mdValue)) {
+        byId("tvDepthShoe").value = getTvdByMd(mdValue).toFixed(2);
+        sessionStorage.setItem("measureDepthShoe", JSON.stringify(parseFloat(byId("measureDepthShoe").value)));
+        sessionStorage.setItem("tvDepthShoe", JSON.stringify(parseFloat(byId("tvDepthShoe").value)));
+    }
+}
+
 //--------------chart data calculation
 function getTvdByMd(md) {
     const survey = sessionStorage.getItem("survey");
@@ -543,94 +644,62 @@ function getMdByVolPumped(pumpedVolume) {
         return arrVolumeDepth[arrVolumeDepth.length - 1].md;
     }
 }
+function calcKillChartData() {
+    const killChartData = [];
+    const interval = 10; //strokes
+    const pump1StrokeDisp = sessionStorage.getItem("pump1StrokeDisp");
+    if (pump1StrokeDisp == null) { return; }
 
-//auto-fill hole TVD; auto-update drillstring DP length to surface
-function cumLengthWithoutDp() {
-    const drillstring = sessionStorage.getItem("drillstring");
-    if (drillstring == null) return;
-    const arrDrillstring = JSON.parse(drillstring);
-    let cumLengthWithoutDp = 0;
-    for (let i = 0; i < arrDrillstring.length - 1; i++) {
-        cumLengthWithoutDp += arrDrillstring[i].length;
+    const pump1Srp1 = sessionStorage.getItem("pump1Srp1");
+    if (pump1Srp1 == null) { return; }
+
+    const killMudDensity = sessionStorage.getItem("killMudDensity");
+    if (killMudDensity == null) { return; }
+
+    const currentDensity = sessionStorage.getItem("currentDensity");
+    if (currentDensity == null) { return; }
+
+    const sidpp = sessionStorage.getItem("sidpp");
+    if (sidpp == null) { return; }
+
+    const volumeDepth = sessionStorage.getItem("volumeDepth");
+    if (volumeDepth == null) { return; }
+    const arrVolumeDepth = JSON.parse(volumeDepth);
+    let volumePumped = 0;
+    let strokesPumped = 0;
+    let spp = 0;
+    while (volumePumped < arrVolumeDepth[arrVolumeDepth.length - 1].cumVolume) {
+
+        spp = parseFloat(pump1Srp1) + (parseFloat(pump1Srp1) * parseFloat(killMudDensity) / parseFloat(currentDensity) - parseFloat(pump1Srp1)) * volumePumped / arrVolumeDepth[arrVolumeDepth.length - 1].cumVolume + parseFloat(sidpp) - getTvdByMd(getMdByVolPumped(volumePumped)) * (parseFloat(killMudDensity) - parseFloat(currentDensity)) * 0.0981;
+
+        killChartData.push([strokesPumped, spp]);
+
+        strokesPumped += interval;
+        volumePumped = strokesPumped * parseFloat(pump1StrokeDisp);
     }
-    return cumLengthWithoutDp;
+    volumePumped = arrVolumeDepth[arrVolumeDepth.length - 1].cumVolume;
+    spp = parseFloat(pump1Srp1) + (parseFloat(pump1Srp1) * parseFloat(killMudDensity) / parseFloat(currentDensity) - parseFloat(pump1Srp1)) * volumePumped / arrVolumeDepth[arrVolumeDepth.length - 1].cumVolume + parseFloat(sidpp) - getTvdByMd(getMdByVolPumped(volumePumped)) * (parseFloat(killMudDensity) - parseFloat(currentDensity)) * 0.0981;
+    killChartData.push([volumePumped / parseFloat(pump1StrokeDisp), spp]);
+    return killChartData;
 }
-
-function surveyLastMd() {
-    const survey = sessionStorage.getItem("survey");
-    if (survey == null) return;
-    const arrSurvey = JSON.parse(survey);
-    return arrSurvey[arrSurvey.length - 1].md;
-}
-function setDpLengthToSurface(value) {
-    const drillstring = sessionStorage.getItem("drillstring");
-    if (drillstring == null) return;
-    const arrDrillstring = JSON.parse(drillstring);
-    arrDrillstring[arrDrillstring.length - 1].length = value;
-    sessionStorage.setItem("drillstring", JSON.stringify(arrDrillstring));
-}
-
-byId("measureDepthHole").oninput = () => {
-    const mdValue = parseFloat(byId("measureDepthHole").value);
-    if (!isNaN(mdValue)) {
-        byId("tvDepthHole").value = getTvdByMd(mdValue).toFixed(2);
-        byId("measureDepthHole").min = cumLengthWithoutDp();//min depth is cumulative length of the drillstring excluding the length of DP to surface
-        // byId("measureDepthHole").max = surveyLastMd();//max depth is dir survey total depth
-        sessionStorage.setItem("measureDepthHole", JSON.stringify(parseFloat(byId("measureDepthHole").value)));
-        sessionStorage.setItem("tvDepthHole", JSON.stringify(parseFloat(byId("tvDepthHole").value)));
-
-    }
-}
-byId("measureDepthHole").onchange = () => {
-    if (parseFloat(byId("measureDepthHole").value) < cumLengthWithoutDp()) {
-        byId("measureDepthHole").value = cumLengthWithoutDp().toFixed(2);
-        byId("tvDepthHole").value = getTvdByMd(cumLengthWithoutDp()).toFixed(2);
-    }
-    // if (parseFloat(byId("measureDepthHole").value) > surveyLastMd()) {
-    //     byId("measureDepthHole").value = surveyLastMd().toFixed(2);
-    //     byId("tvDepthHole").value = getTvdByMd(surveyLastMd()).toFixed(2);
-    // }
-    sessionStorage.setItem("measureDepthHole", JSON.stringify(parseFloat(byId("measureDepthHole").value)));
-    sessionStorage.setItem("tvDepthHole", JSON.stringify(parseFloat(byId("tvDepthHole").value)));
-    setDpLengthToSurface(parseFloat(byId("measureDepthHole").value) - cumLengthWithoutDp());
-    displayDrillstring();
-    setVolumeDepthArray();
-
-    //calculate kill mud density
-    calcKillDensity();
-
-    // calculate fcp
-    calcFinalCircPressure();
-}
-
-//auto-fill casing shoe tvd
-byId("measureDepthShoe").oninput = () => {
-    const mdValue = parseFloat(byId("measureDepthShoe").value);
-
-    if (!isNaN(mdValue)) {
-        byId("tvDepthShoe").value = getTvdByMd(mdValue).toFixed(2);
-        sessionStorage.setItem("measureDepthShoe", JSON.stringify(parseFloat(byId("measureDepthShoe").value)));
-        sessionStorage.setItem("tvDepthShoe", JSON.stringify(parseFloat(byId("tvDepthShoe").value)));
-    }
-}
-
-
-
 // -------------chart
-let dataXY = [
-    [0, 0], [1, -11], [2, 23], [3, 17], [4, 18], [5, 9],
-    [6, 11], [7, 27], [8, 33], [9, 40], [10, 32], [11, 35],
-    [12, 30], [13, 40], [14, 42], [15, 47], [16, 44], [17, 48],
-    [18, 52], [19, 54], [20, 42], [21, 55], [22, 56], [23, 57],
-    [24, 60], [25, 50], [26, 52], [27, 51], [28, 49], [29, 53],
-    [30, 55], [31, 60], [32, 61], [33, 59], [34, 62], [35, 65],
-    [36, 62], [37, 58], [38, 55], [39, 61], [40, 64], [41, 65],
-    [42, 63], [43, 66], [44, 67], [45, 69], [46, 69], [47, 70],
-    [48, 72], [49, 68], [50, 66], [51, 65], [52, 67], [53, 70],
-    [54, 71], [55, 72], [56, 73], [57, 75], [58, 70], [59, 68],
-    [60, 64], [61, 60], [62, 65], [63, 67], [64, 68], [65, 69],
-    [66, 70], [67, 70], [68, 70], [69, 81]
-];
+let dataXY;
+dataXY = calcKillChartData();
+
+// console.log(dataXY);
+//     [0, 0], [1, -11], [2, 23], [3, 17], [4, 18], [5, 9],
+//     [6, 11], [7, 27], [8, 33], [9, 40], [10, 32], [11, 35],
+//     [12, 30], [13, 40], [14, 42], [15, 47], [16, 44], [17, 48],
+//     [18, 52], [19, 54], [20, 42], [21, 55], [22, 56], [23, 57],
+//     [24, 60], [25, 50], [26, 52], [27, 51], [28, 49], [29, 53],
+//     [30, 55], [31, 60], [32, 61], [33, 59], [34, 62], [35, 65],
+//     [36, 62], [37, 58], [38, 55], [39, 61], [40, 64], [41, 65],
+//     [42, 63], [43, 66], [44, 67], [45, 69], [46, 69], [47, 70],
+//     [48, 72], [49, 68], [50, 66], [51, 65], [52, 67], [53, 70],
+//     [54, 71], [55, 72], [56, 73], [57, 75], [58, 70], [59, 68],
+//     [60, 64], [61, 60], [62, 65], [63, 67], [64, 68], [65, 69],
+//     [66, 70], [67, 70], [68, 70], [69, 81]
+// ];
 google.charts.load('current', { packages: ['corechart', 'line'] });
 google.charts.setOnLoadCallback(drawBackgroundColor);
 
@@ -659,4 +728,37 @@ function drawBackgroundColor() {
 
 window.onresize = () => {
     google.charts.setOnLoadCallback(drawBackgroundColor);
+}
+
+function displayChartTable() {
+    if (dataXY.length > 0) {
+        const tBody = byId("chartData");
+        deleteChildElementsOf(tBody);
+        let i = 0;
+        dataXY.forEach(element => {
+            i++;
+            const tr = tBody.insertRow();
+            tr.insertCell().innerHTML = `<input class="w-100" type="number" id="strokes${i}" disabled>`;
+            byId(`strokes${i}`).value = element[0].toFixed(0);
+            tr.insertCell().innerHTML = `<input class="w-100" type="number" id="spp${i}" disabled>`;
+            byId(`spp${i}`).value = element[1].toFixed(2);
+        });
+
+    } else {
+        displayDefaultChartTable();
+    }
+}
+displayChartTable();
+
+function displayDefaultChartTable() {
+    const tBody = byId("chartData");
+    tBody.innerHTML = `
+    <tr>
+    <td><input class="w-100" type="text" id="strokes1" disabled></td>
+    <td><input class="w-100" type="text" id="spp1" disabled></td>
+    </tr>
+    <tr>
+    <td><input class="w-100" type="text" id="strokes2" disabled></td>
+    <td><input class="w-100" type="text" id="spp2" disabled></td>
+    </tr>`;
 }
