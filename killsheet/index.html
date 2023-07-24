@@ -59,11 +59,11 @@
                     <div class="mb-3">
                         <label for="lotPressure" class="w-50">SURFACE LEAK-OFF PRESSURE FROM FORMATION STRENGTH
                             TEST</label>
-                        <span>(A)</span><input class="w-25" type="text" id="lotPressure"><span> bar</span>
+                        <span>(A)</span><input class="w-25" type="number" id="lotPressure" min=0><span> bar</span>
                     </div>
                     <div class="mb-3">
                         <label for="lotDensity" class="w-50">DRILLING FLUID DENSITY AT TEST</label>
-                        <span>(B)</span><input class="w-25" type="text" id="lotDensity"><span> kg/l</span>
+                        <span>(B)</span><input class="w-25" type="number" id="lotDensity" min=0 step=0.01><span> kg/l</span>
                     </div>
                     <div class="mb-3">
                         <label for="maxDensity" class="w-50">MAX. ALLOWABLE DRILLING FLUID DENSITY =
@@ -79,7 +79,7 @@
                         <label for="initialMaasp" class="w-50">INITIAL MAASP = <br>((C) - CURR. DENS.) &#x2715; SHOE
                             T.V.DEPTH
                             &#x2715; 0.0981 </label>
-                        <span>= </span><input class="w-25" type="text" id="initialMaasp" disabled><span> bar</span>
+                        <span>= </span><input class="w-25" type="number" id="initialMaasp" disabled><span> bar</span>
                     </div>
                 </div>
                 <div class="bg-color-white p-1 mb-2">
@@ -159,7 +159,7 @@
                             <h6>DRILLING FLUID DATA:</h6>
                             <div class="mb-1">
                                 <label for="currentDensity" class="w-50">DENSITY</label>
-                                <input class="w-25" type="text" id="currentDensity"><span> kg/l</span>
+                                <input class="w-25" type="number" id="currentDensity" min=0 step=0.01><span> kg/l</span>
                             </div>
                             <!-- <div class="mb-1">
                                 <label for="currentGradient" class="w-50">GRADIENT</label>

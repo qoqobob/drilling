@@ -48,6 +48,96 @@ function preformatFloat(float) {
     return ((posC < posFS) ? (float.replace(/\,/g, '')) : (float.replace(/\./g, '').replace(',', '.')));
 };
 
+//set to sessionStorage
+function displayFromSessionStorage(id) {
+    const valueFromSessionStorage = sessionStorage.getItem(id);
+    if (valueFromSessionStorage == null) return;
+    byId(id).value = valueFromSessionStorage;
+}
+function setToSessionStorage(id) {
+    byId(id).oninput = () => {
+        if (isNaN(parseFloat(byId(id).value))) return;
+        sessionStorage.setItem(id, JSON.stringify(parseFloat(byId(id).value)));
+    }
+}
+setToSessionStorage("currentDensity");
+displayFromSessionStorage("currentDensity");
+
+setToSessionStorage("lotPressure");
+displayFromSessionStorage("lotPressure");
+
+setToSessionStorage("lotDensity");
+displayFromSessionStorage("lotDensity");
+
+displayFromSessionStorage("measureDepthShoe");
+displayFromSessionStorage("tvDepthShoe");
+displayFromSessionStorage("measureDepthHole");
+displayFromSessionStorage("tvDepthHole");
+
+
+
+function calcMaxAllowedDensity() {
+    sessionStorage.setItem("lotDensity", parseFloat(byId("lotDensity").value));
+    const lotPressure = sessionStorage.getItem("lotPressure");
+    if (lotPressure == null) { byId("maxDensity").value = ""; return; }
+    const lotDensity = sessionStorage.getItem("lotDensity");
+    if (lotDensity == null) { byId("maxDensity").value = ""; return; }
+    const tvDepthShoe = sessionStorage.getItem("tvDepthShoe");
+    if (tvDepthShoe == null) { byId("maxDensity").value = ""; return; }
+    let maxDensity = parseFloat(lotDensity) + parseFloat(lotPressure) / (parseFloat(tvDepthShoe) * 0.0981);
+    maxDensity = (Math.floor(maxDensity * 100) / 100); // rounding of 3rd decimal is floor for MAX. ALLOWABLE DRILLING FLUID DENSITY 
+    sessionStorage.setItem("maxDensity", maxDensity);
+    byId("maxDensity").value = maxDensity;
+}
+function calcInitialMaasp() {
+    const currentDensity = sessionStorage.getItem("currentDensity");
+    if (currentDensity == null) { byId("initialMaasp").value = ""; return; }
+    const maxDensity = sessionStorage.getItem("maxDensity");
+    if (maxDensity == null) { byId("initialMaasp").value = ""; return; }
+    const tvDepthShoe = sessionStorage.getItem("tvDepthShoe");
+    if (tvDepthShoe == null) { byId("maxDensity").value = ""; return; }
+    const initialMaasp = (parseFloat(maxDensity) - parseFloat(currentDensity)) * parseFloat(tvDepthShoe) * 0.0981;
+    sessionStorage.setItem("initialMaasp", initialMaasp);
+    byId("initialMaasp").value = initialMaasp.toFixed(2);
+}
+byId("lotPressure").onchange = () => {
+    //calculate MAX. ALLOWABLE DRILLING FLUID DENSITY
+    calcMaxAllowedDensity();
+
+    //calculate INITIAL MAASP
+    calcInitialMaasp();
+}
+byId("lotDensity").onchange = () => {
+    //calculate MAX. ALLOWABLE DRILLING FLUID DENSITY
+    calcMaxAllowedDensity();
+
+    //calculate INITIAL MAASP
+    calcInitialMaasp();
+}
+
+byId("measureDepthShoe").onchange = () => {
+    //calculate MAX. ALLOWABLE DRILLING FLUID DENSITY
+    calcMaxAllowedDensity();
+
+    //calculate INITIAL MAASP
+    calcInitialMaasp();
+}
+byId("currentDensity").onchange = () => {
+    //calculate INITIAL MAASP
+    // const maxDensity = sessionStorage.getItem("maxDensity");
+    // if (maxDensity == null) { byId("initialMaasp").value = ""; return; }
+    calcInitialMaasp();
+}
+//calculate MAX. ALLOWABLE DRILLING FLUID DENSITY
+calcMaxAllowedDensity();
+
+//calculate INITIAL MAASP
+calcInitialMaasp();
+
+
+
+
+
 //-------------directional survey
 function displaySurvey() {
     const survey = sessionStorage.getItem("survey");
@@ -68,7 +158,8 @@ function displaySurvey() {
         });
 
         //if open hole MD or TVD is not filled then last survey point is taken
-        if (isNaN(parseFloat(byId("measureDepthHole").value)) || isNaN(parseFloat(byId("tvDepthHole").value))) {
+        if (isNaN(parseFloat(byId("measureDepthHole").value)) || isNaN(parseFloat(byId("tvDepthHole").value))
+        ) {
             byId("measureDepthHole").value = arrSurvey[arrSurvey.length - 1].md;
             byId("tvDepthHole").value = arrSurvey[arrSurvey.length - 1].tvd;
         }
@@ -368,7 +459,6 @@ function getMdByVolPumped(pumpedVolume) {
         return arrVolumeDepth[arrVolumeDepth.length - 1].md;
     }
 }
-console.log(getMdByVolPumped(16000));
 
 //auto-fill hole TVD; auto-update drillstring DP length to surface
 function cumLengthWithoutDp() {
@@ -401,11 +491,13 @@ byId("measureDepthHole").oninput = () => {
         byId("tvDepthHole").value = getTvdByMd(mdValue).toFixed(2);
         byId("measureDepthHole").min = cumLengthWithoutDp();//min depth is cumulative length of the drillstring excluding the length of DP to surface
         // byId("measureDepthHole").max = surveyLastMd();//max depth is dir survey total depth
+        sessionStorage.setItem("measureDepthHole", JSON.stringify(parseFloat(byId("measureDepthHole").value)));
+        sessionStorage.setItem("tvDepthHole", JSON.stringify(parseFloat(byId("tvDepthHole").value)));
+
     }
 }
 byId("measureDepthHole").onchange = () => {
     if (parseFloat(byId("measureDepthHole").value) < cumLengthWithoutDp()) {
-        console.log(cumLengthWithoutDp());
         byId("measureDepthHole").value = cumLengthWithoutDp().toFixed(2);
         byId("tvDepthHole").value = getTvdByMd(cumLengthWithoutDp()).toFixed(2);
     }
@@ -421,8 +513,11 @@ byId("measureDepthHole").onchange = () => {
 //auto-fill casing shoe tvd
 byId("measureDepthShoe").oninput = () => {
     const mdValue = parseFloat(byId("measureDepthShoe").value);
+
     if (!isNaN(mdValue)) {
         byId("tvDepthShoe").value = getTvdByMd(mdValue).toFixed(2);
+        sessionStorage.setItem("measureDepthShoe", JSON.stringify(parseFloat(byId("measureDepthShoe").value)));
+        sessionStorage.setItem("tvDepthShoe", JSON.stringify(parseFloat(byId("tvDepthShoe").value)));
     }
 }
 
