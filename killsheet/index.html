@@ -89,7 +89,7 @@
                             <!-- <td>PUMP NO. 2 DISPLACEMENT</td> -->
                         </tr>
                         <tr>
-                            <td><input class="w-25" type="text" id="pump1StrokeDisp"> l/stroke</td>
+                            <td><input class="w-25" type="number" id="pump1StrokeDisp" min=0 step=0.01> l/stroke</td>
                             <!-- <td><input class="w-50" type="text" id="pump2StrokeDisp" disabled> l/stroke</td> -->
                         </tr>
                     </table>
@@ -105,8 +105,8 @@
                             <!-- <td>PUMP NO. 2</td> -->
                         </tr>
                         <tr>
-                            <td><input class="w-25" type="text" id="spm1"> SPM</td>
-                            <td><input class="w-25" type="text" id="pump1Srp1"> bar</td>
+                            <td><input class="w-25" type="number" id="spm1" min=0> SPM</td>
+                            <td><input class="w-25" type="number" id="pump1Srp1" min=0> bar</td>
                             <!-- <td>
                                 <input class="w-50" type="text" id="pump2Srp1" disabled> bar
                             </td> -->
@@ -398,11 +398,11 @@
                 <div class="row mb-1">
                     <div class="col-sm-4 mb-1">
                         <label for="sidpp" class="w-25">SIDPP</label>
-                        <input class="w-50" type="text" id="sidpp"><span> bar</span>
+                        <input class="w-50" type="number" id="sidpp" min=0><span> bar</span>
                     </div>
                     <div class="col-sm-4 mb-1">
                         <label for="sicp" class="w-25">SICP</label>
-                        <input class="w-50" type="text" id="sicp"><span> bar</span>
+                        <input class="w-50" type="number" id="sicp" min=0><span> bar</span>
                     </div>
                     <!-- <div class="col-sm-4 mb-1">
                         <label for="pitGain" class="w-25">PIT&nbsp;GAIN</label>

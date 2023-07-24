@@ -60,6 +60,21 @@ function setToSessionStorage(id) {
         sessionStorage.setItem(id, JSON.stringify(parseFloat(byId(id).value)));
     }
 }
+setToSessionStorage("sidpp");
+displayFromSessionStorage("sidpp");
+
+setToSessionStorage("sicp");
+displayFromSessionStorage("sicp");
+
+setToSessionStorage("spm1");
+displayFromSessionStorage("spm1");
+
+setToSessionStorage("pump1Srp1");
+displayFromSessionStorage("pump1Srp1");
+
+setToSessionStorage("pump1StrokeDisp");
+displayFromSessionStorage("pump1StrokeDisp");
+
 setToSessionStorage("currentDensity");
 displayFromSessionStorage("currentDensity");
 
@@ -100,6 +115,40 @@ function calcInitialMaasp() {
     sessionStorage.setItem("initialMaasp", initialMaasp);
     byId("initialMaasp").value = initialMaasp.toFixed(2);
 }
+function calcKillDensity() {
+    const currentDensity = sessionStorage.getItem("currentDensity");
+    if (currentDensity == null) { byId("killMudDensity").value = ""; return; }
+    const tvDepthHole = sessionStorage.getItem("tvDepthHole");
+    if (tvDepthHole == null) { byId("killMudDensity").value = ""; return; }
+    const sidpp = sessionStorage.getItem("sidpp");
+    if (sidpp == null) { byId("killMudDensity").value = ""; return; }
+    let killMudDensity = parseFloat(currentDensity) + parseFloat(sidpp) / (parseFloat(tvDepthHole) * 0.0981);
+    killMudDensity = (Math.ceil(killMudDensity * 100) / 100); // kill mud density rounded by ceil to 2 decimals
+    sessionStorage.setItem("killMudDensity", killMudDensity);
+    byId("killMudDensity").value = killMudDensity;
+
+}
+function calcInitialCircPressure() {
+    const pump1Srp1 = sessionStorage.getItem("pump1Srp1");
+    if (pump1Srp1 == null) { byId("icp").value = ""; return; }
+    const sidpp = sessionStorage.getItem("sidpp");
+    if (sidpp == null) { byId("icp").value = ""; return; }
+    const icp = parseFloat(pump1Srp1) + parseFloat(sidpp);
+    sessionStorage.setItem("icp", icp);
+    byId("icp").value = icp.toFixed(1);
+}
+function calcFinalCircPressure() {
+    const pump1Srp1 = sessionStorage.getItem("pump1Srp1");
+    if (pump1Srp1 == null) { byId("fcp").value = ""; return; }
+    const killMudDensity = sessionStorage.getItem("killMudDensity");
+    if (killMudDensity == null) { byId("fcp").value = ""; return; }
+    const currentDensity = sessionStorage.getItem("currentDensity");
+    if (currentDensity == null) { byId("fcp").value = ""; return; }
+    const fcp = parseFloat(pump1Srp1) * parseFloat(killMudDensity) / parseFloat(currentDensity);
+    sessionStorage.setItem("fcp", fcp);
+    byId("fcp").value = fcp.toFixed(1);
+}
+
 byId("lotPressure").onchange = () => {
     //calculate MAX. ALLOWABLE DRILLING FLUID DENSITY
     calcMaxAllowedDensity();
@@ -124,18 +173,53 @@ byId("measureDepthShoe").onchange = () => {
 }
 byId("currentDensity").onchange = () => {
     //calculate INITIAL MAASP
-    // const maxDensity = sessionStorage.getItem("maxDensity");
-    // if (maxDensity == null) { byId("initialMaasp").value = ""; return; }
     calcInitialMaasp();
+
+    //calculate kill mud density
+    calcKillDensity();
+
+    // calculate fcp
+    calcFinalCircPressure();
 }
+
+byId("sidpp").onchange = () => {
+    //calculate kill mud density
+    calcKillDensity();
+
+    //calculate icp
+    calcInitialCircPressure();
+
+    // calculate fcp
+    calcFinalCircPressure();
+}
+byId("pump1Srp1").onchange = () => {
+    //calculate icp
+    calcInitialCircPressure();
+
+    // calculate fcp
+    calcFinalCircPressure();
+}
+
+// byId("measureDepthHole").onchange = () => { see below this event handler
+//     //calculate kill mud density
+//     calcKillDensity();
+// }
+
+
 //calculate MAX. ALLOWABLE DRILLING FLUID DENSITY
 calcMaxAllowedDensity();
 
 //calculate INITIAL MAASP
 calcInitialMaasp();
 
+//calculate kill maud density
+calcKillDensity();
 
+//calculate icp
+calcInitialCircPressure();
 
+// calculate fcp
+calcFinalCircPressure();
 
 
 //-------------directional survey
@@ -485,6 +569,7 @@ function setDpLengthToSurface(value) {
     arrDrillstring[arrDrillstring.length - 1].length = value;
     sessionStorage.setItem("drillstring", JSON.stringify(arrDrillstring));
 }
+
 byId("measureDepthHole").oninput = () => {
     const mdValue = parseFloat(byId("measureDepthHole").value);
     if (!isNaN(mdValue)) {
@@ -505,9 +590,17 @@ byId("measureDepthHole").onchange = () => {
     //     byId("measureDepthHole").value = surveyLastMd().toFixed(2);
     //     byId("tvDepthHole").value = getTvdByMd(surveyLastMd()).toFixed(2);
     // }
+    sessionStorage.setItem("measureDepthHole", JSON.stringify(parseFloat(byId("measureDepthHole").value)));
+    sessionStorage.setItem("tvDepthHole", JSON.stringify(parseFloat(byId("tvDepthHole").value)));
     setDpLengthToSurface(parseFloat(byId("measureDepthHole").value) - cumLengthWithoutDp());
     displayDrillstring();
     setVolumeDepthArray();
+
+    //calculate kill mud density
+    calcKillDensity();
+
+    // calculate fcp
+    calcFinalCircPressure();
 }
 
 //auto-fill casing shoe tvd
