@@ -123,22 +123,39 @@ byId("cancelSurveyBtn").onclick = () => {
 byId("saveSurveyBtn").onclick = () => {
     let survey = [];
     const rawSurvey = byId("textareaSurvey").value;
+    if (rawSurvey.trim() == "") {
+        hide("surveyDiv");
+        byId("textareaSurvey").value = "";
+        return;
+    }
     const rows = rawSurvey.split(/\r?\n/);
     let isNullValue = false;
-    survey.push({
-        md: 0,
-        tvd: 0
-    });
+
+    let i = 0;
+    while (rows[i].trim() == "") {
+        i++;
+    }
+    const row = rows[i].split(/\t|;/)
+    if (parseFloat(preformatFloat(row[0])) != 0) {
+        survey.push({
+            md: 0,
+            tvd: 0
+        });
+    };
+
     rows.forEach(element => {
         if (element.trim() != "") {
             const row = element.split(/\t|;/)
             const mdValue = parseFloat(preformatFloat(row[0]));
             const tvdValue = parseFloat(preformatFloat(row[1]));
-            survey.push({
-                md: mdValue,
-                tvd: tvdValue
-            });
-            if (isNaN(mdValue) || isNaN(tvdValue)) { isNullValue = true; }
+            if (survey.map(element => element.md).includes(mdValue) == false) {
+                survey.push({
+                    md: mdValue,
+                    tvd: tvdValue
+                });
+                if (isNaN(mdValue) || isNaN(tvdValue)) { isNullValue = true; }
+            }
+
         }
     });
     if (!isNullValue) { sessionStorage.setItem("survey", JSON.stringify(survey)); }
@@ -147,8 +164,9 @@ byId("saveSurveyBtn").onclick = () => {
         byId("measureDepthHole").value = surveyLastMd().toFixed(2);
         byId("tvDepthHole").value = getTvdByMd(surveyLastMd()).toFixed(2);
     }
-    setDpLengthToSurface(parseFloat(byId("measureDepthHole").value)-cumLengthWithoutDp());
+    setDpLengthToSurface(parseFloat(byId("measureDepthHole").value) - cumLengthWithoutDp());
     displayDrillstring();
+    setVolumeDepthArray();
     hide("surveyDiv");
     byId("textareaSurvey").value = "";
 }
@@ -276,6 +294,7 @@ byId("saveDrillstringBtn").onclick = () => {
         byId("measureDepthHole").value = cumLengthWithoutDp().toFixed(2);
         byId("tvDepthHole").value = getTvdByMd(cumLengthWithoutDp()).toFixed(2);
     }
+    setVolumeDepthArray();
     hide("drillstringDiv");
     byId("textareaDrillstring").value = "";
 }
@@ -291,32 +310,65 @@ function getTvdByMd(md) {
         if (md > arrSurvey[i].md && md <= arrSurvey[i + 1].md) {
             return arrSurvey[i].tvd + (md - arrSurvey[i].md) * (arrSurvey[i + 1].tvd - arrSurvey[i].tvd) / (arrSurvey[i + 1].md - arrSurvey[i].md);
         }
+
     }
-    return -1;
+    if (md > arrSurvey[arrSurvey.length - 1].md && arrSurvey.length > 1) {
+        return arrSurvey[arrSurvey.length - 1].tvd + (md - arrSurvey[arrSurvey.length - 1].md) * (arrSurvey[arrSurvey.length - 1].tvd - arrSurvey[arrSurvey.length - 2].tvd) / (arrSurvey[arrSurvey.length - 1].md - arrSurvey[arrSurvey.length - 2].md);
+    }
+    return md;
 }
 
-function getMdByTvd(tvd) {
-    const survey = sessionStorage.getItem("survey");
-    if (survey == null) return tvd;
-    const arrSurvey = JSON.parse(survey);
-    for (let i = 0; i < arrSurvey.length - 1; i++) {
-        if (tvd == arrSurvey[i].tvd) {
-            return arrSurvey[i].md;
-        }
-        if (tvd > arrSurvey[i].tvd && tvd <= arrSurvey[i + 1].tvd) {
-            return arrSurvey[i].md + (tvd - arrSurvey[i].tvd) * (arrSurvey[i + 1].md - arrSurvey[i].md) / (arrSurvey[i + 1].tvd - arrSurvey[i].tvd);
-        }
-    }
-    return -1;
-}
-
-function getMdByVolPumped(pumpedVolume) {
+// function getMdByTvd(tvd) {
+//     const survey = sessionStorage.getItem("survey");
+//     if (survey == null) return tvd;
+//     const arrSurvey = JSON.parse(survey);
+//     for (let i = 0; i < arrSurvey.length - 1; i++) {
+//         if (tvd == arrSurvey[i].tvd) {
+//             return arrSurvey[i].md;
+//         }
+//         if (tvd > arrSurvey[i].tvd && tvd <= arrSurvey[i + 1].tvd) {
+//             return arrSurvey[i].md + (tvd - arrSurvey[i].tvd) * (arrSurvey[i + 1].md - arrSurvey[i].md) / (arrSurvey[i + 1].tvd - arrSurvey[i].tvd);
+//         }
+//     }
+//     return -1;
+// }
+function setVolumeDepthArray() {
+    const volumeDepth = [];
     const drillstring = sessionStorage.getItem("drillstring");
     if (drillstring == null) return;
     const arrDrillstring = JSON.parse(drillstring);
-    //not finished
+    volumeDepth.push({
+        cumVolume: 0,
+        md: 0
+    });
+
+    for (let i = arrDrillstring.length - 1; i >= 0; i--) {
+        volumeDepth.push({
+            cumVolume: volumeDepth[volumeDepth.length - 1].cumVolume + arrDrillstring[i].length * arrDrillstring[i].capacity,
+            md: volumeDepth[volumeDepth.length - 1].md + arrDrillstring[i].length
+        });
+    };
+
+    sessionStorage.setItem("volumeDepth", JSON.stringify(volumeDepth));
 }
 
+function getMdByVolPumped(pumpedVolume) {
+    const volumeDepth = sessionStorage.getItem("volumeDepth");
+    if (volumeDepth == null) return;
+    const arrVolumeDepth = JSON.parse(volumeDepth);
+    for (let i = 0; i < arrVolumeDepth.length - 1; i++) {
+        if (pumpedVolume == arrVolumeDepth[i].cumVolume) {
+            return arrVolumeDepth[i].md;
+        }
+        if (pumpedVolume > arrVolumeDepth[i].cumVolume && pumpedVolume <= arrVolumeDepth[i + 1].cumVolume) {
+            return arrVolumeDepth[i].md + (pumpedVolume - arrVolumeDepth[i].cumVolume) * (arrVolumeDepth[i + 1].md - arrVolumeDepth[i].md) / (arrVolumeDepth[i + 1].cumVolume - arrVolumeDepth[i].cumVolume);
+        }
+    }
+    if (pumpedVolume > arrVolumeDepth[arrVolumeDepth.length - 1].cumVolume) {
+        return arrVolumeDepth[arrVolumeDepth.length - 1].md;
+    }
+}
+console.log(getMdByVolPumped(16000));
 
 //auto-fill hole TVD; auto-update drillstring DP length to surface
 function cumLengthWithoutDp() {
@@ -340,15 +392,15 @@ function setDpLengthToSurface(value) {
     const drillstring = sessionStorage.getItem("drillstring");
     if (drillstring == null) return;
     const arrDrillstring = JSON.parse(drillstring);
-    arrDrillstring[arrDrillstring.length - 1].length=value;
-    sessionStorage.setItem("drillstring", JSON.stringify(arrDrillstring)); 
+    arrDrillstring[arrDrillstring.length - 1].length = value;
+    sessionStorage.setItem("drillstring", JSON.stringify(arrDrillstring));
 }
 byId("measureDepthHole").oninput = () => {
     const mdValue = parseFloat(byId("measureDepthHole").value);
     if (!isNaN(mdValue)) {
         byId("tvDepthHole").value = getTvdByMd(mdValue).toFixed(2);
         byId("measureDepthHole").min = cumLengthWithoutDp();//min depth is cumulative length of the drillstring excluding the length of DP to surface
-        byId("measureDepthHole").max = surveyLastMd();//max depth is dir survey total depth
+        // byId("measureDepthHole").max = surveyLastMd();//max depth is dir survey total depth
     }
 }
 byId("measureDepthHole").onchange = () => {
@@ -357,12 +409,13 @@ byId("measureDepthHole").onchange = () => {
         byId("measureDepthHole").value = cumLengthWithoutDp().toFixed(2);
         byId("tvDepthHole").value = getTvdByMd(cumLengthWithoutDp()).toFixed(2);
     }
-    if (parseFloat(byId("measureDepthHole").value) > surveyLastMd()) {
-        byId("measureDepthHole").value = surveyLastMd().toFixed(2);
-        byId("tvDepthHole").value = getTvdByMd(surveyLastMd()).toFixed(2);
-    }
-    setDpLengthToSurface(parseFloat(byId("measureDepthHole").value)-cumLengthWithoutDp());
+    // if (parseFloat(byId("measureDepthHole").value) > surveyLastMd()) {
+    //     byId("measureDepthHole").value = surveyLastMd().toFixed(2);
+    //     byId("tvDepthHole").value = getTvdByMd(surveyLastMd()).toFixed(2);
+    // }
+    setDpLengthToSurface(parseFloat(byId("measureDepthHole").value) - cumLengthWithoutDp());
     displayDrillstring();
+    setVolumeDepthArray();
 }
 
 //auto-fill casing shoe tvd
