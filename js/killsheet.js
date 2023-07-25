@@ -756,6 +756,7 @@ function displayChartTable() {
         });
 
     } else {
+        dataXY=[[0,0]];
         displayDefaultChartTable();
     }
 }
