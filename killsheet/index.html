@@ -51,7 +51,24 @@
         </nav>
     </div>
     <div class="container-fluid bg-color-white pt-4">
-        <h3>Surface BOP Kill Sheet - Deviated Well (Metric/Bar)</h3>
+        <h3>Surface BOP Kill Sheet - Deviated or Vertical Well (Metric/Bar)</h3>
+        <p>This page is a kill chart calculator for any well: deviated or vertical.
+            <br> If DEVIATION DATA is not filled then the well is considered vertical in calculations. <br> FORMATION
+            STRENGTH DATA are allowed to be skipped, the kill chart calculation does not require it.
+            <br> The annular pumping stage (when the kill mud exits the bit and goes up in annulus) is not calculated
+            for now, but may appear in future.
+        </p>
+        <div class="row mt-2 mb-2 g-2" >
+
+            <div class="col-md-6">
+                <span>Play with a pre-filled J-type well with horizontal section and tapered&nbsp;4"&nbsp;&#x2715&nbsp;5&nbsp;7/8"&nbsp;drillstring: </span>
+                <a href="#chart_div" class="btn btn-info m-2" id="defaultChartButton">Generate kill chart</a>
+            </div>
+            <div class="col-md-6">
+                <span>All input fields can be cleared with the button: </span>
+                <a href="" class="btn btn-warning m-2" id="clearSessionButton">Clear all data</a>
+            </div>
+        </div>
         <div class="row g-0">
             <div class="col-lg-6 p-2 bg-color-middle  order-2">
                 <div class="bg-color-white p-1 mb-2">
@@ -63,7 +80,8 @@
                     </div>
                     <div class="mb-3">
                         <label for="lotDensity" class="w-50">DRILLING FLUID DENSITY AT TEST</label>
-                        <span>(B)</span><input class="w-25" type="number" id="lotDensity" min=0 step=0.01><span> kg/l</span>
+                        <span>(B)</span><input class="w-25" type="number" id="lotDensity" min=0 step=0.01><span>
+                            kg/l</span>
                     </div>
                     <div class="mb-3">
                         <label for="maxDensity" class="w-50">MAX. ALLOWABLE DRILLING FLUID DENSITY =
@@ -202,7 +220,7 @@
                             </div> -->
                             <div class="mb-1">
                                 <label for="measureDepthShoe" class="w-50">M.DEPTH</label>
-                                <input class="w-25" id="measureDepthShoe" type="number"  min=0 step=0.01><span> m</span>
+                                <input class="w-25" id="measureDepthShoe" type="number" min=0 step=0.01><span> m</span>
                             </div>
                             <div class="mb-1">
                                 <label for="tvDepthShoe" class="w-50">T.V.DEPTH</label>
@@ -256,7 +274,7 @@
                         </small>
                     </div>
                     <div class="d-flex flex-row mt-2 w-100">
-                        <textarea class="me-2 w-75" id="textareaDrillstring" cols="30" rows="10"></textarea>
+                        <textarea class="me-2 w-75" id="textareaDrillstring" cols="30" rows="7"></textarea>
                         <div>
                             <button class="btn btn-sm btn-outline-success m-2" id="saveDrillstringBtn">Save volume
                                 data</button>
@@ -276,8 +294,8 @@
                                 <td>LENGTH, m</td>
                                 <td>CAPACITY, l/m</td>
                                 <td>VOLUME, litre</td>
-                                <td>PUMP STROKES, strokes</td>
-                                <td>TIME, minutes</td>
+                                <!-- <td>PUMP STROKES, strokes</td>
+                                <td>TIME, minutes</td> -->
                             </tr>
                             <!-- <tr class="bg-color-gray">
                                 <td></td>
@@ -293,38 +311,38 @@
                                     <td><input class="w-100" type="text" id="dsCompLength1" disabled></td>
                                     <td><input class="w-100" type="text" id="dsCompCapacity1" disabled></td>
                                     <td><input class="w-100" type="text" id="dsCompVolume1" disabled></td>
-                                    <td><input class="w-100" type="text" id="dsCompStrokes1" disabled></td>
-                                    <td><input class="w-100" type="text" id="dsCompPumpTime1" disabled></td>
+                                    <!-- <td><input class="w-100" type="text" id="dsCompStrokes1" disabled></td>
+                                    <td><input class="w-100" type="text" id="dsCompPumpTime1" disabled></td> -->
                                 </tr>
                                 <tr>
                                     <td>DRILLSTRING COMPONENT 2</td>
                                     <td><input class="w-100" type="text" id="dsCompLength2" disabled></td>
                                     <td><input class="w-100" type="text" id="dsCompCapacity2" disabled></td>
                                     <td><input class="w-100" type="text" id="dsCompVolume2" disabled></td>
-                                    <td><input class="w-100" type="text" id="dsCompStrokes2" disabled></td>
-                                    <td><input class="w-100" type="text" id="dsCompPumpTime2" disabled></td>
+                                    <!-- <td><input class="w-100" type="text" id="dsCompStrokes2" disabled></td>
+                                    <td><input class="w-100" type="text" id="dsCompPumpTime2" disabled></td> -->
                                 </tr>
                                 <tr>
                                     <td>...</td>
                                     <td><input class="w-100" type="text" id="dsCompLength3" disabled></td>
                                     <td><input class="w-100" type="text" id="dsCompCapacity3" disabled></td>
                                     <td><input class="w-100" type="text" id="dsCompVolume3" disabled></td>
-                                    <td><input class="w-100" type="text" id="dsCompStrokes3" disabled></td>
-                                    <td><input class="w-100" type="text" id="dsCompPumpTime3" disabled></td>
+                                    <!-- <td><input class="w-100" type="text" id="dsCompStrokes3" disabled></td>
+                                    <td><input class="w-100" type="text" id="dsCompPumpTime3" disabled></td> -->
                                 </tr>
                                 <tr>
                                     <td>DRILLSTRING COMPONENT N <i>(e.g. DP)</i></td>
                                     <td><input class="w-100" type="text" id="dsCompLengthN" disabled></td>
                                     <td><input class="w-100" type="text" id="dsCompCapacityN" disabled></td>
                                     <td><input class="w-100" type="text" id="dsCompVolumeN" disabled></td>
-                                    <td><input class="w-100" type="text" id="dsCompStrokesN" disabled></td>
-                                    <td><input class="w-100" type="text" id="dsCompPumpTimeN" disabled></td>
+                                    <!-- <td><input class="w-100" type="text" id="dsCompStrokesN" disabled></td>
+                                    <td><input class="w-100" type="text" id="dsCompPumpTimeN" disabled></td> -->
                                 </tr>
                                 <tr>
                                     <td colspan="3">DRILLSTRING VOLUME</td>
                                     <td><input class="w-100" type="text" id="dsVolume" disabled></td>
-                                    <td><input class="w-100" type="text" id="dsStrokes" disabled></td>
-                                    <td><input class="w-100" type="text" id="dsPumpTime" disabled></td>
+                                    <!-- <td><input class="w-100" type="text" id="dsStrokes" disabled></td>
+                                    <td><input class="w-100" type="text" id="dsPumpTime" disabled></td> -->
                                 </tr>
                                 <!-- <tr class="bg-color-gray">
                                     <td></td>
