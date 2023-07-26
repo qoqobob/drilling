@@ -38,7 +38,7 @@
                                 cementation</a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn btn-sm btn-outline-dark m-1 text-color-white" href="">BUS angle formula</a>
+                            <a class="btn btn-sm btn-outline-dark m-1 text-color-white" href="formula.html">Inclination angel formula</a>
                         </li>
                     </ul>
                 </div>
@@ -48,8 +48,8 @@
     <div class="container-fluid bg-color-white pt-4">
         <h3>Surface BOP Kill Sheet - Deviated or Vertical Well (Metric/Bar)</h3>
         <p>Welcome! Here is a kill chart calculator for any type of a well: deviated or vertical.
-            <br> If DEVIATION DATA is not filled then the well is considered vertical in calculations. <br> FORMATION
-            STRENGTH DATA are allowed to be skipped, the kill chart calculation does not require it.
+            <br> If <a href="#deviation" class="text-decoration-none">DEVIATION DATA</a> is not filled then the well is considered vertical in calculations. <br><a href="#formationStrength" class="text-decoration-none">FORMATION
+            STRENGTH DATA</a>  are allowed to be skipped, the kill chart calculation does not require it.
             <br> The annular pumping stage (when the kill mud exits the bit and goes up in annulus) is not calculated
             for now, but may appear in future.
         </p>
@@ -61,13 +61,13 @@
             </div>
             <div class="col-md-6">
                 <span>All input fields can be cleared with the button: </span>
-                <a href="" class="btn btn-warning m-2" id="clearSessionButton">Clear all data</a>
+                <a href="" class="btn btn-warning m-2" id="clearSessionButton">Clear all data & chart</a>
             </div>
         </div>
         <div class="row g-0">
             <div class="col-lg-6 p-2 bg-color-middle  order-2">
                 <div class="bg-color-white p-1 mb-2">
-                    <h6 class="fw-bold">FORMATION STRENGTH DATA:</h6>
+                    <h6 class="fw-bold" id="formationStrength">FORMATION STRENGTH DATA:</h6>
                     <div class="mb-3">
                         <label for="lotPressure" class="w-50">SURFACE LEAK-OFF PRESSURE FROM FORMATION STRENGTH
                             TEST</label>
@@ -180,7 +180,7 @@
                             </div> -->
                         </div>
                         <div class="mb-3">
-                            <h6>DEVIATION DATA: <button class="btn btn-sm btn-outline-primary"
+                            <h6 id="deviation">DEVIATION DATA: <button class="btn btn-sm btn-outline-primary"
                                     id="addSurveyBtn">Add/edit
                                     survey points</button></h6>
                             <div class="mb-1">
