@@ -45,20 +45,74 @@
             </div>
         </nav>
     </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl modal-fullscreen-xl-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Test matrix</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body overflow-scroll">
+                    <img class="img-matrix" src="img/matrix.png" alt="test matrix">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container-fluid bg-color-white pt-4">
         <h3>Test matrix</h3>
-        <p>This page is a kill chart calculator for any well: deviated or vertical.
-            <br> If DEVIATION DATA is not filled then the well is considered vertical in calculations. <br> FORMATION
-            STRENGTH DATA are allowed to be skipped, the kill chart calculation does not require it.
-            <br> The annular pumping stage (when the kill mud exits the bit and goes up in annulus) is not calculated
-            for now, but may appear in future.
-        </p>
-        <div class="row">
-            <div class="col-md-5">
+        <div class="row g-0">
+            <div class="col-md-8">
+                <p>
+                    Test matrix is more than a table, it is an awesome analytical tool to develop smart/efficient BOP
+                    tests sequence. </p>
+                <p>
+                    The pressure control equipment test (BOP pressure test) is regular 2-3 weeks based operation,
+                    therefore advantages the test matrix allows to achieve as the best possible performance and safety improvement are crucial, to name some in detail:</p>
+                <ul>
+                    <li>Assistance to see whole picture, an overview of all tests, what is
+                        tested, how many times;</li>
+                    <li>Assurance that all wet and non-wet envelop valves (of kill, choke, stand pipe manifold, BOP stack, mud pumps) are tested to correct pressure and correct flow direction – it is kind of Process Safety procedural barrier, a proof document;</li>
+                    <li>
+                        Possibility to reduce number of tests in sequence to as minimum as possible;
+                    </li>
+                    <li>
+                        Possibility of splitting the well control equipment to “kill side” and “choke side” allowing independent testing of stand pipe manifold / rig pump’s valves and choke valves;
+                    </li>
+                    <li>
+                        Balancing of valves quantity being tested in each individual test to have approximately even distribution in the whole sequence of tests;
+                    </li>
+                    <li>
+                        Reduction of valves' manipulation between tests and therefore a wear;
+                    </li>
+                    <li>
+                        Simplification of search for a valve leak;
+                    </li>
+                    <li>
+                        Possibility of splitting “off-line” and “on-line” tests.
+                    </li>
+
+                </ul>
+            </div>
+            <div class="col-md-4 text-center">
+                <img class="w-100 mb-2" src="img/matrix.png" alt="test matrix">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal">
+                    Enlarge <i class="bi bi-zoom-in"></i>
+                </button>
 
             </div>
-            <div class="col-md-7">
-                <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <div id="carouselExampleFade" class="carousel slide carousel-fade " data-bs-ride="carousel">
                     <div class="carousel-inner">
                         <div class="carousel-item active">
                             <img src="img/test1.png" class="d-block w-100" alt="...">
@@ -103,6 +157,7 @@
                     </button>
                 </div>
             </div>
+            <div class="col-md-1"></div>
 
 
         </div>
