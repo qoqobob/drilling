@@ -474,7 +474,7 @@ function displayDrillstring() {
         });
         const trSum = tBody.insertRow();
         trSum.innerHTML = `<td colspan="3">DRILLSTRING VOLUME</td>
-        <td><input class="w-100" type="text" id="dsVolume" disabled></td>
+        <td><input class="w-100 form-control d-inline" type="text" id="dsVolume" disabled></td>
         `;
         byId("dsVolume").value = cumVol.toFixed(2);
         
