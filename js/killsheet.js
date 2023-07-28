@@ -261,9 +261,9 @@ function displaySurvey() {
             i++;
             const tr = tBody.insertRow();
             tr.insertCell().innerText = i;
-            tr.insertCell().innerHTML = `<input class="w-100" type="number" id="md${i}" disabled>`;
+            tr.insertCell().innerHTML = `<input class="w-100 form-control d-inline" type="number" id="md${i}" disabled>`;
             byId(`md${i}`).value = element.md;
-            tr.insertCell().innerHTML = `<input class="w-100" type="number" id="tvd${i}" disabled>`;
+            tr.insertCell().innerHTML = `<input class="w-100 form-control d-inline" type="number" id="tvd${i}" disabled>`;
             byId(`tvd${i}`).value = element.tvd;
         });
 
@@ -286,13 +286,13 @@ function displayDefaultSurvey() {
     tBody.innerHTML = `
     <tr>
     <td>1</td>
-    <td><input class="w-100" type="text" id="md1" disabled></td>
-    <td><input class="w-100" type="text" id="tvd1" disabled></td>
+    <td><input class="w-100 form-control d-inline" type="text" id="md1" disabled></td>
+    <td><input class="w-100 form-control d-inline" type="text" id="tvd1" disabled></td>
     </tr>
     <tr>
     <td>2</td>
-    <td><input class="w-100" type="text" id="md2" disabled></td>
-    <td><input class="w-100" type="text" id="tvd2" disabled></td>
+    <td><input class="w-100 form-control d-inline" type="text" id="md2" disabled></td>
+    <td><input class="w-100 form-control d-inline" type="text" id="tvd2" disabled></td>
     </tr>`;
 }
 
@@ -400,35 +400,35 @@ function displayDefaultDrillstring() {
     tBody.innerHTML = `
     <tr>
     <td>DRILLSTRING COMPONENT 1 <i>(e.g. Bit)</i></td>
-    <td><input class="w-100" type="text" id="dsCompLength1" disabled></td>
-    <td><input class="w-100" type="text" id="dsCompCapacity1" disabled></td>
-    <td><input class="w-100" type="text" id="dsCompVolume1" disabled></td>
+    <td><input class="w-100 form-control d-inline" type="text" id="dsCompLength1" disabled></td>
+    <td><input class="w-100 form-control d-inline" type="text" id="dsCompCapacity1" disabled></td>
+    <td><input class="w-100 form-control d-inline" type="text" id="dsCompVolume1" disabled></td>
 
     </tr>
     <tr>
     <td>DRILLSTRING COMPONENT 2</td>
-    <td><input class="w-100" type="text" id="dsCompLength2" disabled></td>
-    <td><input class="w-100" type="text" id="dsCompCapacity2" disabled></td>
-    <td><input class="w-100" type="text" id="dsCompVolume2" disabled></td>
+    <td><input class="w-100 form-control d-inline" type="text" id="dsCompLength2" disabled></td>
+    <td><input class="w-100 form-control d-inline" type="text" id="dsCompCapacity2" disabled></td>
+    <td><input class="w-100 form-control d-inline" type="text" id="dsCompVolume2" disabled></td>
 
     </tr>
     <tr>
     <td>...</td>
-    <td><input class="w-100" type="text" id="dsCompLength3" disabled></td>
-    <td><input class="w-100" type="text" id="dsCompCapacity3" disabled></td>
-    <td><input class="w-100" type="text" id="dsCompVolume3" disabled></td>
+    <td>...</td>
+    <td>...</td>
+    <td>...</td>
 
     </tr>
     <tr>
     <td>DRILLSTRING COMPONENT N <i>(e.g. DP)</i></td>
-    <td><input class="w-100" type="text" id="dsCompLengthN" disabled></td>
-    <td><input class="w-100" type="text" id="dsCompCapacityN" disabled></td>
-    <td><input class="w-100" type="text" id="dsCompVolumeN" disabled></td>
+    <td><input class="w-100 form-control d-inline" type="text" id="dsCompLengthN" disabled></td>
+    <td><input class="w-100 form-control d-inline" type="text" id="dsCompCapacityN" disabled></td>
+    <td><input class="w-100 form-control d-inline" type="text" id="dsCompVolumeN" disabled></td>
 
     </tr>
     <tr>
     <td colspan="3">DRILLSTRING VOLUME</td>
-    <td><input class="w-100" type="text" id="dsVolume" disabled></td>
+    <td><input class="w-100 form-control d-inline" type="text" id="dsVolume" disabled></td>
 
     </tr>`;
 }
@@ -460,11 +460,11 @@ function displayDrillstring() {
             i++;
             const tr = tBody.insertRow();
             tr.insertCell().innerText = element.description;
-            tr.insertCell().innerHTML = `<input class="w-100" type="text" id="dsCompLength${i}" disabled>`;
+            tr.insertCell().innerHTML = `<input class="w-100 form-control d-inline" type="text" id="dsCompLength${i}" disabled>`;
             byId(`dsCompLength${i}`).value = Number(element.length).toFixed(2);
-            tr.insertCell().innerHTML = `<input class="w-100" type="text" id="dsCompCapacity${i}" disabled>`;
+            tr.insertCell().innerHTML = `<input class="w-100 form-control d-inline" type="text" id="dsCompCapacity${i}" disabled>`;
             byId(`dsCompCapacity${i}`).value = Number(element.capacity).toFixed(2);
-            tr.insertCell().innerHTML = `<input class="w-100" type="text" id="dsCompVolume${i}" disabled>`;
+            tr.insertCell().innerHTML = `<input class="w-100 form-control d-inline" type="text" id="dsCompVolume${i}" disabled>`;
             byId(`dsCompVolume${i}`).value = Number(element.capacity * element.length).toFixed(2);
             // tr.insertCell().innerHTML = `<input class="w-100" type="text" id="dsCompStrokes${i}" disabled>`;
             // byId(`dsCompStrokes${i}`).value = element.capacity*element.length/strokeVolume;
@@ -768,9 +768,9 @@ function displayChartTable() {
         dataXY.forEach(element => {
             i++;
             const tr = tBody.insertRow();
-            tr.insertCell().innerHTML = `<input class="w-100" type="number" id="strokes${i}" disabled>`;
+            tr.insertCell().innerHTML = `<input class="form-control d-inline w-100" type="number" id="strokes${i}" disabled>`;
             byId(`strokes${i}`).value = element[0].toFixed(0);
-            tr.insertCell().innerHTML = `<input class="w-100" type="number" id="spp${i}" disabled>`;
+            tr.insertCell().innerHTML = `<input class="w-100 form-control d-inline" type="number" id="spp${i}" disabled>`;
             byId(`spp${i}`).value = element[1].toFixed(2);
         });
 
@@ -785,12 +785,12 @@ function displayDefaultChartTable() {
     const tBody = byId("chartData");
     tBody.innerHTML = `
     <tr>
-    <td><input class="w-100" type="text" id="strokes1" disabled></td>
-    <td><input class="w-100" type="text" id="spp1" disabled></td>
+    <td><input class="w-100 form-control d-inline" type="text" id="strokes1" disabled></td>
+    <td><input class="w-100 form-control d-inline" type="text" id="spp1" disabled></td>
     </tr>
     <tr>
-    <td><input class="w-100" type="text" id="strokes2" disabled></td>
-    <td><input class="w-100" type="text" id="spp2" disabled></td>
+    <td><input class="w-100 form-control d-inline" type="text" id="strokes2" disabled></td>
+    <td><input class="w-100 form-control d-inline" type="text" id="spp2" disabled></td>
     </tr>`;
 }
 
