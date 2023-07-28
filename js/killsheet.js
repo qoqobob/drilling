@@ -364,7 +364,10 @@ byId("saveSurveyBtn").onclick = () => {
     if (parseFloat(byId("measureDepthHole").value) > surveyLastMd()) {
         byId("measureDepthHole").value = surveyLastMd().toFixed(2);
         byId("tvDepthHole").value = getTvdByMd(surveyLastMd()).toFixed(2);
+    }else{
+        byId("tvDepthHole").value = getTvdByMd(parseFloat(byId("measureDepthHole").value)).toFixed(2);
     }
+    
     if(cumLengthWithoutDp() < parseFloat(byId("measureDepthHole").value)) {
         setDpLengthToSurface(parseFloat(byId("measureDepthHole").value) - cumLengthWithoutDp());
     } else{
@@ -698,7 +701,8 @@ function calcKillChartData() {
     let volumePumped = 0;
     let strokesPumped = 0;
     let spp = 0;
-    while (volumePumped < arrVolumeDepth[arrVolumeDepth.length - 1].cumVolume) {
+    const cumDpStrokes = arrVolumeDepth[arrVolumeDepth.length - 1].cumVolume / parseFloat(pump1StrokeDisp);
+    while (strokesPumped < cumDpStrokes) {
 
         spp = parseFloat(pump1Srp1) + (parseFloat(pump1Srp1) * parseFloat(killMudDensity) / parseFloat(currentDensity) - parseFloat(pump1Srp1)) * volumePumped / arrVolumeDepth[arrVolumeDepth.length - 1].cumVolume + parseFloat(sidpp) - getTvdByMd(getMdByVolPumped(volumePumped)) * (parseFloat(killMudDensity) - parseFloat(currentDensity)) * 0.0981;
 
@@ -709,7 +713,7 @@ function calcKillChartData() {
     }
     volumePumped = arrVolumeDepth[arrVolumeDepth.length - 1].cumVolume;
     spp = parseFloat(pump1Srp1) + (parseFloat(pump1Srp1) * parseFloat(killMudDensity) / parseFloat(currentDensity) - parseFloat(pump1Srp1)) * volumePumped / arrVolumeDepth[arrVolumeDepth.length - 1].cumVolume + parseFloat(sidpp) - getTvdByMd(getMdByVolPumped(volumePumped)) * (parseFloat(killMudDensity) - parseFloat(currentDensity)) * 0.0981;
-    killChartData.push([volumePumped / parseFloat(pump1StrokeDisp), spp]);
+    killChartData.push([cumDpStrokes, spp]);
     return killChartData;
 }
 // -------------chart
@@ -773,6 +777,7 @@ function displayChartTable() {
             tr.insertCell().innerHTML = `<input class="w-100 form-control d-inline" type="number" id="spp${i}" disabled>`;
             byId(`spp${i}`).value = element[1].toFixed(2);
         });
+        byId(`strokes${dataXY.length}`).value = dataXY[dataXY.length-1][0].toFixed(2);
 
     } else {
         dataXY=[[0,0]];
