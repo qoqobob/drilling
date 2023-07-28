@@ -363,9 +363,19 @@ byId("saveSurveyBtn").onclick = () => {
         byId("measureDepthHole").value = cumLengthWithoutDp().toFixed(2);
         byId("tvDepthHole").value = getTvdByMd(cumLengthWithoutDp()).toFixed(2);
     }
-    
+
+    sessionStorage.setItem("measureDepthHole", JSON.stringify(parseFloat(byId("measureDepthHole").value)));
+    sessionStorage.setItem("tvDepthHole", JSON.stringify(parseFloat(byId("tvDepthHole").value)));
+    setDpLengthToSurface(parseFloat(byId("measureDepthHole").value) - cumLengthWithoutDp());
     displayDrillstring();
     setVolumeDepthArray();
+
+    //calculate kill mud density
+    calcKillDensity();
+
+    // calculate fcp
+    calcFinalCircPressure();
+
     hide("surveyDiv");
     byId("textareaSurvey").value = "";
 
