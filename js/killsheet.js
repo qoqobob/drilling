@@ -217,6 +217,15 @@ byId("pump1Srp1").onchange = () => {
     displayChartTable();
 }
 
+byId("pump1StrokeDisp").onchange = () => {
+
+
+    //redraw chart
+    dataXY = calcKillChartData();
+    google.charts.setOnLoadCallback(drawBackgroundColor);
+    displayChartTable();
+}
+
 // byId("measureDepthHole").onchange = () => { see below this event handler
 //     //calculate kill mud density
 //     calcKillDensity();
