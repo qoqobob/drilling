@@ -70,7 +70,7 @@
                     <div class="mb-3">
                         <label for="lotPressure" class="w-50">SURFACE LEAK-OFF PRESSURE FROM FORMATION STRENGTH
                             TEST</label>
-                        <span>(A)</span><input class="w-25" type="number" id="lotPressure" min=0><span> bar</span>
+                        <span>(A)</span><input class="w-25" type="number" id="lotPressure" min=0 step=0.01><span> bar</span>
                     </div>
                     <div class="mb-3">
                         <label for="lotDensity" class="w-50">DRILLING FLUID DENSITY AT TEST</label>
@@ -118,7 +118,7 @@
                         </tr>
                         <tr>
                             <td><input class="w-25" type="number" id="spm1" min=0> SPM</td>
-                            <td><input class="w-25" type="number" id="pump1Srp1" min=0> bar</td>
+                            <td><input class="w-25" type="number" id="pump1Srp1" min=0 step=0.01> bar</td>
                             <!-- <td>
                                 <input class="w-50" type="text" id="pump2Srp1" disabled> bar
                             </td> -->
@@ -410,11 +410,11 @@
                 <div class="row mb-1">
                     <div class="col-sm-4 mb-1">
                         <label for="sidpp" class="w-25">SIDPP</label>
-                        <input class="w-50" type="number" id="sidpp" min=0><span> bar</span>
+                        <input class="w-50" type="number" id="sidpp" min=0 step=0.01><span> bar</span>
                     </div>
                     <div class="col-sm-4 mb-1">
                         <label for="sicp" class="w-25">SICP</label>
-                        <input class="w-50" type="number" id="sicp" min=0><span> bar</span>
+                        <input class="w-50" type="number" id="sicp" min=0 step=0.01><span> bar</span>
                     </div>
                     <!-- <div class="col-sm-4 mb-1">
                         <label for="pitGain" class="w-25">PIT&nbsp;GAIN</label>
