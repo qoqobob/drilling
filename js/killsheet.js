@@ -612,6 +612,8 @@ function getTvdByMd(md) {
     const survey = sessionStorage.getItem("survey");
     if (survey == null) return md;
     const arrSurvey = JSON.parse(survey);
+
+
     for (let i = 0; i < arrSurvey.length - 1; i++) {
         if (md == arrSurvey[i].md) {
             return arrSurvey[i].tvd;
@@ -621,6 +623,8 @@ function getTvdByMd(md) {
         }
 
     }
+    
+
     if (md > arrSurvey[arrSurvey.length - 1].md && arrSurvey.length > 1) {
         return arrSurvey[arrSurvey.length - 1].tvd + (md - arrSurvey[arrSurvey.length - 1].md) * (arrSurvey[arrSurvey.length - 1].tvd - arrSurvey[arrSurvey.length - 2].tvd) / (arrSurvey[arrSurvey.length - 1].md - arrSurvey[arrSurvey.length - 2].md);
     }
